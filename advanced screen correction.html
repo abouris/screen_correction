@@ -1,0 +1,312 @@
+<html><head>
+<title>Screen Correction Generator - 30 Patterns</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  select, button {
+    margin: 10px;
+    padding: 5px 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+  }
+  #screen {
+    width: 1000px;
+    height: 562.5px;
+    background-color: #000;
+    margin: 20px 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .control {
+    margin: 0 10px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  input[type="range"] {
+    width: 200px;
+  }
+  #text-readability {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: left;
+    color: #fff;
+    text-shadow: 0 0 2px #000;
+    overflow-y: auto;
+  }
+</style>
+<script type="text/javascript" nonce="3ef5692b142a4420908a6375302" src="//local.adguard.org?ts=1720691028772&amp;type=content-script&amp;dmn=party.websim.ai&amp;url=https%3A%2F%2Fparty.websim.ai%2Fapi%2Fv1%2Fsites%2FXb7NcyQ9rvmawxeLU%2Fhtml%3Fraw%3Dtrue&amp;app=com.google.Chrome&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script>
+<script type="text/javascript" nonce="3ef5692b142a4420908a6375302" src="//local.adguard.org?ts=1720691028772&amp;name=AdGuard%20Assistant&amp;name=AdGuard%20Extra&amp;type=user-script"></script></head>
+<body>
+  <h1>Screen Correction Generator</h1>
+  
+  <select id="correctionType">
+    <option value="chroma">1. Chroma Test</option>
+    <option value="color">2. Color Bars</option>
+    <option value="alignment">3. Alignment Grid</option>
+    <option value="gamma">4. Gamma Ramp</option>
+    <option value="grayscale">5. Grayscale Steps</option>
+    <option value="sharpness">6. Sharpness Pattern</option>
+    <option value="convergence">7. Convergence Test</option>
+    <option value="colortemperature">8. Color Temperature</option>
+    <option value="backlight">9. Backlight Bleed Test</option>
+    <option value="viewing_angle">10. Viewing Angle Test</option>
+    <option value="color_gradient">11. Color Gradient</option>
+    <option value="black_level">12. Black Level</option>
+    <option value="white_saturation">13. White Saturation</option>
+    <option value="color_clipping">14. Color Clipping</option>
+    <option value="subpixel">15. Subpixel Pattern</option>
+    <option value="moire">16. Moiré Pattern</option>
+    <option value="dynamic_range">17. Dynamic Range</option>
+    <option value="color_banding">18. Color Banding</option>
+    <option value="uniformity">19. Uniformity Test</option>
+    <option value="geometry">20. Geometry Test</option>
+    <option value="focus">21. Focus Test</option>
+    <option value="dead_pixel">22. Dead Pixel Test</option>
+    <option value="refresh_rate">23. Refresh Rate Test</option>
+    <option value="response_time">24. Response Time Test</option>
+    <option value="color_accuracy">25. Color Accuracy Test</option>
+    <option value="contrast_ratio">26. Contrast Ratio Test</option>
+    <option value="text_readability">27. Text Readability Test</option>
+    <option value="motion_blur">28. Motion Blur Test</option>
+    <option value="input_lag">29. Input Lag Test</option>
+    <option value="color_shift">30. Color Shift Test</option>
+  </select>
+
+  <div id="screen"></div>
+
+  <div class="controls">
+    <div class="control">
+      <label for="brightness">Brightness</label>
+      <input type="range" id="brightness" min="0" max="200" value="100">
+    </div>
+    <div class="control">
+      <label for="contrast">Contrast</label>
+      <input type="range" id="contrast" min="0" max="200" value="100">
+    </div>
+    <div class="control">
+      <label for="saturation">Saturation</label>
+      <input type="range" id="saturation" min="0" max="200" value="100">
+    </div>
+    <div class="control">
+      <label for="hue">Hue</label>
+      <input type="range" id="hue" min="0" max="360" value="0">
+    </div>
+  </div>
+
+  <button id="download">Download High Resolution Image</button>
+
+  <script>
+    const screen = document.getElementById('screen');
+    const correctionType = document.getElementById('correctionType');
+    const brightnessControl = document.getElementById('brightness');
+    const contrastControl = document.getElementById('contrast');
+    const saturationControl = document.getElementById('saturation');
+    const hueControl = document.getElementById('hue');
+    const downloadButton = document.getElementById('download');
+
+    function updateScreen() {
+      const type = correctionType.value;
+      const brightness = brightnessControl.value;
+      const contrast = contrastControl.value;
+      const saturation = saturationControl.value;
+      const hue = hueControl.value;
+
+      screen.innerHTML = '';
+      screen.style.background = generatePattern(type);
+      screen.style.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) hue-rotate(${hue}deg)`;
+
+      if (type === 'text_readability') {
+        generateTextReadabilityTest();
+      }
+    }
+
+    function generatePattern(type) {
+      switch(type) {
+        case 'chroma':
+          return 'repeating-linear-gradient(45deg, #ff0000 0px, #ff0000 20px, #00ff00 20px, #00ff00 40px, #0000ff 40px, #0000ff 60px)';
+        case 'color':
+          return 'linear-gradient(to right, #ffffff 0%, #ffffff 14.28%, #ffff00 14.28%, #ffff00 28.56%, #00ffff 28.56%, #00ffff 42.84%, #00ff00 42.84%, #00ff00 57.12%, #ff00ff 57.12%, #ff00ff 71.4%, #ff0000 71.4%, #ff0000 85.68%, #0000ff 85.68%, #0000ff 100%)';
+        case 'alignment':
+          return 'repeating-linear-gradient(to right, #333 0px, #333 1px, transparent 1px, transparent 100px), repeating-linear-gradient(to bottom, #333 0px, #333 1px, transparent 1px, transparent 100px)';
+        case 'gamma':
+          return generateGammaRamp();
+        case 'grayscale':
+          return generateGrayscaleSteps();
+        case 'sharpness':
+          return 'repeating-linear-gradient(45deg, #000 0px, #000 1px, #fff 1px, #fff 2px)';
+        case 'convergence':
+          return 'repeating-linear-gradient(to right, #f00 0px, #f00 1px, #0f0 1px, #0f0 2px, #00f 2px, #00f 3px, transparent 3px, transparent 10px), repeating-linear-gradient(to bottom, #f00 0px, #f00 1px, #0f0 1px, #0f0 2px, #00f 2px, #00f 3px, transparent 3px, transparent 10px)';
+        case 'colortemperature':
+          return 'linear-gradient(to right, #ff3800 0%, #ff8912 20%, #ffd200 40%, #ffffff 60%, #c6e0ff 80%, #4874ff 100%)';
+        case 'backlight':
+          return '#000000';
+        case 'viewing_angle':
+          return 'radial-gradient(circle at center, #ffffff 0%, #cccccc 25%, #999999 50%, #666666 75%, #333333 100%)';
+        case 'color_gradient':
+          return 'linear-gradient(to right, #ff0000 0%, #ffff00 16.6%, #00ff00 33.3%, #00ffff 50%, #0000ff 66.6%, #ff00ff 83.3%, #ff0000 100%)';
+        case 'black_level':
+          return '#010101';
+        case 'white_saturation':
+          return '#fefefe';
+        case 'color_clipping':
+          return 'linear-gradient(to right, #ff0000 0%, #ff0000 33.3%, #00ff00 33.3%, #00ff00 66.6%, #0000ff 66.6%, #0000ff 100%)';
+        case 'subpixel':
+          return 'repeating-linear-gradient(to right, #ff0000 0px, #ff0000 1px, #00ff00 1px, #00ff00 2px, #0000ff 2px, #0000ff 3px)';
+        case 'moire':
+          return 'repeating-linear-gradient(45deg, #000 0px, #000 1px, #fff 1px, #fff 2px), repeating-linear-gradient(-45deg, #000 0px, #000 1px, #fff 1px, #fff 2px)';
+        case 'dynamic_range':
+          return generateDynamicRange();
+        case 'color_banding':
+          return generateColorBanding();
+        case 'uniformity':
+          return 'radial-gradient(circle at center, #fff 0%, #fff 25%, #eee 25%, #eee 50%, #ddd 50%, #ddd 75%, #ccc 75%, #ccc 100%)';
+        case 'geometry':
+          return 'linear-gradient(#000, #000), linear-gradient(to right, #fff, #fff), linear-gradient(to bottom, #fff, #fff), radial-gradient(circle at center, #fff 0%, #fff 1%, transparent 1%)';
+        case 'focus':
+          return 'repeating-radial-gradient(circle at center, #000, #000 1px, #fff 1px, #fff 2px)';
+        case 'dead_pixel':
+          return 'linear-gradient(45deg, #ff0000 0%, #ff0000 25%, #00ff00 25%, #00ff00 50%, #0000ff 50%, #0000ff 75%, #ffffff 75%, #ffffff 100%)';
+        case 'refresh_rate':
+          return 'repeating-linear-gradient(to right, #000 0px, #000 1px, #fff 1px, #fff 2px)';
+        case 'response_time':
+          return 'linear-gradient(to right, #000 0%, #000 50%, #fff 50%, #fff 100%)';
+        case 'color_accuracy':
+          return 'linear-gradient(to right, #ff0000 0%, #ff0000 16.6%, #00ff00 16.6%, #00ff00 33.3%, #0000ff 33.3%, #0000ff 50%, #ffff00 50%, #ffff00 66.6%, #00ffff 66.6%, #00ffff 83.3%, #ff00ff 83.3%, #ff00ff 100%)';
+        case 'contrast_ratio':
+          return 'linear-gradient(to right, #000 0%, #000 50%, #fff 50%, #fff 100%)';
+        case 'text_readability':
+          return 'linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9))';
+        case 'motion_blur':
+          return 'repeating-linear-gradient(to right, #000 0px, #000 20px, #fff 20px, #fff 40px)';
+        case 'input_lag':
+          return 'radial-gradient(circle at center, #fff 0%, #fff 50%, #000 50%, #000 100%)';
+        case 'color_shift':
+          return 'linear-gradient(to right, #ff0000 0%, #ff0000 33.3%, #00ff00 33.3%, #00ff00 66.6%, #0000ff 66.6%, #0000ff 100%)';
+        default:
+          return 'linear-gradient(#000, #fff)';
+      }
+    }
+
+    function generateGammaRamp() {
+      let gradient = 'linear-gradient(to right';
+      for (let i = 0; i <= 100; i++) {
+        gradient += `, rgb(${i*2.55}, ${i*2.55}, ${i*2.55}) ${i}%`;
+      }
+      gradient += ')';
+      return gradient;
+    }
+
+    function generateGrayscaleSteps() {
+      let gradient = 'linear-gradient(to right';
+      for (let i = 0; i <= 10; i++) {
+        let value = i * 25.5;
+        gradient += `, rgb(${value}, ${value}, ${value}) ${i*10}%`;
+      }
+      gradient += ')';
+      return gradient;
+    }
+
+    function generateDynamicRange() {
+      let gradient = 'linear-gradient(to right';
+      for (let i = 0; i <= 100; i++) {
+        gradient += `, rgb(${i*2.55}, ${i*2.55}, ${i*2.55}) ${i}%`;
+      }
+      gradient += ')';
+      return gradient;
+    }
+
+    function generateColorBanding() {
+      let gradient = 'linear-gradient(to right';
+      for (let i = 0; i <= 10; i++) {
+        gradient += `, hsl(${i*36}, 100%, 50%) ${i*10}%`;
+      }
+      gradient += ')';
+      return gradient;
+    }
+
+    function generateTextReadabilityTest() {
+      const textReadability = document.createElement('div');
+      textReadability.id = 'text-readability';
+      for (let i = 1; i <= 60; i++) {
+        const text = document.createElement('div');
+        text.style.fontSize = `${i}px`;
+        text.textContent = `${i}pt - The quick brown fox jumps over the lazy dog`;
+        textReadability.appendChild(text);
+      }
+      screen.appendChild(textReadability);
+    }
+
+    correctionType.addEventListener('change', updateScreen);
+    brightnessControl.addEventListener('input', updateScreen);
+    contrastControl.addEventListener('input', updateScreen);
+    saturationControl.addEventListener('input', updateScreen);
+    hueControl.addEventListener('input', updateScreen);
+
+    downloadButton.addEventListener('click', () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 4000;
+      canvas.height = 2250;
+
+      // Create a temporary div to render the background
+      const tempDiv = document.createElement('div');
+      tempDiv.style.width = canvas.width + 'px';
+      tempDiv.style.height = canvas.height + 'px';
+      tempDiv.style.background = screen.style.background;
+      
+      // Convert the div to an image
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        // Apply filters
+        ctx.filter = screen.style.filter;
+        ctx.drawImage(canvas, 0, 0);
+
+        // If it's the text readability test, draw the text
+        if (correctionType.value === 'text_readability') {
+          ctx.font = 'bold 16px Arial';
+          ctx.fillStyle = 'white';
+          ctx.textAlign = 'center';
+          for (let i = 1; i <= 60; i++) {
+            ctx.font = `${i*4}px Arial`;
+            ctx.fillText(`${i}pt - The quick brown fox jumps over the lazy dog`, canvas.width/2, (i*4*1.2));
+          }
+        }
+
+        const link = document.createElement('a');
+        link.download = 'screen_correction.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      };
+      img.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="' + canvas.width + '" height="' + canvas.height + '"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;' + tempDiv.style.cssText + '"></div></foreignObject></svg>');
+    });
+
+    // Initial screen update
+    updateScreen();
+  </script>
+</body></html>
